@@ -12,14 +12,14 @@ namespace A9.Tests
     [TestClass()]
     public class GradedTests
     {
-        [TestMethod(), Timeout(1100)]
+        [TestMethod(), Timeout(3000)]
         [DeploymentItem("TestData", "A9_TestData")]
         public void SolveTest()
         {
             Processor[] problems = new Processor[] {
                 new ConvertIntoHeap("TD1"),
                 new ParallelProcessing("TD2"),
-                //new MergingTables("TD3") TD3_NOT_SOLVED
+                new MergingTables("TD3") 
             };
 
             foreach (var p in problems)
@@ -28,12 +28,12 @@ namespace A9.Tests
             }
         }
 
-        [TestMethod() , Timeout(1000)]
+        [TestMethod() ]
         [DeploymentItem("TestData", "A9_TestData")]
         public void ConvertIntoHeapTest()
         {
-            ConvertIntoHeap convertInto = new ConvertIntoHeap("TD1");
-            TestTools.RunLocalTest("A9", convertInto.Process, convertInto.TestDataName);
+            ConvertIntoHeap p = new ConvertIntoHeap("TD1");
+            TestTools.RunLocalTest("A9", p.Process, p.TestDataName);
         }
 
         [TestMethod()]
@@ -41,6 +41,14 @@ namespace A9.Tests
         public void ParallelProcessingTest()
         {
             ParallelProcessing p = new ParallelProcessing("TD2");
+            TestTools.RunLocalTest("A9", p.Process, p.TestDataName);
+        }
+
+        [TestMethod()]
+        [DeploymentItem("TestData", "A9_TestData")]
+        public void MergingTablesTest()
+        {
+            MergingTables p = new MergingTables("TD3");
             TestTools.RunLocalTest("A9", p.Process, p.TestDataName);
         }
     }

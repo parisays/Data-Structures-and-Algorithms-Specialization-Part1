@@ -48,10 +48,10 @@ namespace A9
 
         public void ChangePriority(int index, long priority, int size)
         {
-            long oldThread = Threads.ElementAt(index).NextFreeTime;
+            long oldPriority = Threads.ElementAt(index).NextFreeTime;
             Threads[index].NextFreeTime = priority;
 
-            if (priority < oldThread)
+            if (priority < oldPriority)
                 SiftUp(index);
             else
                 SiftDown(index, size);

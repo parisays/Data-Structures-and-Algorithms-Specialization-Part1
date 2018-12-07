@@ -10,24 +10,21 @@ namespace A9
 
         public override string Process(string inStr) =>
             TestTools.Process(inStr, (Func<long[], Tuple<long, long>[]>)Solve);
-
-        public List<Tuple<long, long>> Swaps;
+        
 
         public Tuple<long, long>[] Solve(
             long[] array)
         {
             double size = array.Length;
-            Swaps = new List<Tuple<long, long>>();
+            List<Tuple<long, long>>  swaps = new List<Tuple<long, long>>();
 
             for(int i = (int)Math.Floor(size /2) - 1; i>=0; i--)
-            {
-                SiftDown(i, array);
-            }
+                SiftDown(i, array, swaps);
 
-            return Swaps.ToArray();
+            return swaps.ToArray();
         }
 
-        private void SiftDown(int i, long[] array)
+        private void SiftDown(int i, long[] array, List<Tuple<long, long>> swaps)
         {
             int leftChild = 2 * i + 1;
             int rightChild = 2 * i + 2;
@@ -42,9 +39,9 @@ namespace A9
 
             if (i != minIndex)
             {
-                Swaps.Add(Tuple.Create<long, long>(i, minIndex));
+                swaps.Add(Tuple.Create<long, long>(i, minIndex));
                 (array[i], array[minIndex]) = (array[minIndex], array[i]);
-                SiftDown(minIndex, array);
+                SiftDown(minIndex, array, swaps);
             }
             
         }
