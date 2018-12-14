@@ -65,8 +65,8 @@ namespace A10
 
         public void Add(string str, long bucketCount)
         {
-            long chain = ((PolyHash(str, 0, str.Length) % bucketCount) 
-                                                    + bucketCount) % bucketCount;
+            long chain = (PolyHash(str, 0, str.Length) % bucketCount) ;
+                                                    //+ bucketCount) % bucketCount;
 
             if (!Chains[chain].Contains(str))
                 Chains[chain].AddFirst(str);
@@ -74,8 +74,8 @@ namespace A10
 
         public string Find(string str, long bucketCount)
         {
-            long chain = ((PolyHash(str, 0, str.Length) % bucketCount)
-                                                    + bucketCount) % bucketCount;
+            long chain = (PolyHash(str, 0, str.Length) % bucketCount);
+                                                    //+ bucketCount) % bucketCount;
 
             if (Chains[chain].Contains(str))
                 return "yes";
@@ -85,8 +85,8 @@ namespace A10
 
         public void Delete(string str, long bucketCount)
         {
-            long chain = ((PolyHash(str, 0, str.Length) % bucketCount)
-                                                     + bucketCount) % bucketCount;
+            long chain = (PolyHash(str, 0, str.Length) % bucketCount);
+                                                     //+ bucketCount) % bucketCount;
 
             if (Chains[chain].Contains(str))
                 Chains[chain].Remove(str);
