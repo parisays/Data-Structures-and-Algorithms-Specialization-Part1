@@ -27,24 +27,13 @@ namespace A10
             for(int i=0; i<= text.Length - pattern.Length; i++)
             {
                 if (pHash == tHashes[i])
-                    if (AreEqual(text.Substring( i , pattern.Length),  pattern))
-                        occurrences.Add(i);
+                        if (pattern.Equals(text.Substring(i, pattern.Length)))
+                            occurrences.Add(i);
             }
             
             return occurrences.ToArray();
         }
-
-        private bool AreEqual(string text, string pattern)
-        {
-            if (text.Length != pattern.Length)
-                return false;
-
-            for (int i = 0; i < text.Length; i++)
-                if (text[i] != pattern[i])
-                    return false;
-
-            return true;
-        }
+        
 
         public const long BigPrimeNumber = 1000000007;
 
