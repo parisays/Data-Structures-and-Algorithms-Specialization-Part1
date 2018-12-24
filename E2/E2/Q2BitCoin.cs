@@ -15,24 +15,31 @@ namespace E2
         /// </summary>
         public bool Mine(byte[] data, int difficultyLevel, out uint nonce)
         {
+            
             Random rnd = new Random(0);
+            int zeroBytes = 0;
+            do
+            {
+                // Try one random value
+                nonce = (uint)rnd.Next(0, int.MaxValue);
 
-            // Try one random value
-            nonce = (uint) rnd.Next(0, int.MaxValue);
+                // Copy nonce to the end of data
+                BitConverter.GetBytes(nonce).CopyTo(data, sizeof(uint));
 
-            // Copy nonce to the end of data
-            BitConverter.GetBytes(nonce).CopyTo(data, sizeof(uint));
+                // Calculate Hash
+                byte[] doubleHash = Hasher.ComputeHash(Hasher.ComputeHash(data));
 
-            // Calculate Hash
-            byte[] doubleHash = Hasher.ComputeHash(Hasher.ComputeHash(data));
+                // How many zero bytes does it have at the end?
+                zeroBytes = CountEndingZeroBytes(
+                                    doubleHash,
+                                    difficultyLevel);
 
-            // How many zero bytes does it have at the end?
-            int zeroBytes = CountEndingZeroBytes(
-                doubleHash,
-                difficultyLevel);
+            } while (zeroBytes < difficultyLevel);
+
+
 
             // Return if the number of zero bytes is enough
-            return zeroBytes >= difficultyLevel;
+            return true;
         }
 
         public static int CountEndingZeroBytes(byte[] doubleHash, int? maxBytesToCheck = null)

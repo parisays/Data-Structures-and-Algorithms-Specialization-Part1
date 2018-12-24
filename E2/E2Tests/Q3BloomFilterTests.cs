@@ -19,7 +19,7 @@ namespace E2.Tests
             int pwdCount = 1_000_000;
 
             // اندازه مناسب را خودتون انتخاب کنید
-            int filterSize =(5 * pwdCount);
+            int filterSize = 1_000_000_000;
 
             // تعداد توابع را هم خودتان تنظیم کنید
             int hashFnCount = 3;
@@ -51,7 +51,7 @@ namespace E2.Tests
                 bool trueAnswer = passwords.Contains(pwd);
 
                 // اگر فیلتر بگه توی لیست نیست، ولی واقعا باشه که کلا اشتباه شده
-                Assert.IsTrue(!filterAnswer && trueAnswer);
+                Assert.IsFalse(!trueAnswer && filterAnswer);
 
                 // اگر فیلتر بگه توی لیست هست ولی واقعا نباشه میشه falsePositive
                 if (!trueAnswer && filterAnswer)

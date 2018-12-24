@@ -12,7 +12,8 @@ namespace E2
         ///و در مکانه آی از این آرایه لیست بچه های نود آیم هستند
         ///اگر لیست خالی بود، بچه ندارد
         /// </summary>
-        public List<int>[] Nodes;
+        public readonly List<int>[] Nodes;
+        private List<int>[] NewNodes;
 
         public Q4TreeDiameter(int nodeCount, int seed = 0)
         {
@@ -20,19 +21,81 @@ namespace E2
             
         }
 
-        public int TreeHeight()
+        public int TreeHeight() => SimpleTreeHeight(0);
+
+        private int SimpleTreeHeight(int node)
         {
-            return 0;
+            int[] answers = new int[Nodes[node].Count];
+            int i = 0;
+            foreach (int childIndex in Nodes[node])
+            {
+                if (Nodes[childIndex].Count == 0)
+                    answers[i] = 1;
+                else
+                    answers[i] += SimpleTreeHeight(childIndex);
+                i++;
+            }
+
+            return answers.Max() + 1;
         }
 
         public int TreeHeightFromNode(int node)
         {
-            return 0;
+            ChangeTree(node);
+            int height = ModifiedTreeHeight(node);
+            return height;
+        }
+
+        private int ModifiedTreeHeight(int node)
+        {
+            int[] answers = new int[NewNodes[node].Count];
+            int i = 0;
+            foreach (int childIndex in NewNodes[node])
+            {
+                if (NewNodes[childIndex].Count == 0)
+                    answers[i] = 1;
+                else
+                    answers[i] += ModifiedTreeHeight(childIndex);
+                i++;
+            }
+
+            return (answers.Max() + 1);
+        }
+
+        private void ChangeTree(int node)
+        {
+            NewNodes = new List<int>[Nodes.Length];
+            
+            for(int i=0; i<Nodes.Length; i++)
+            {
+                NewNodes[i] = new List<int>();
+                NewNodes[i].AddRange(Nodes[i].GetRange(0,Nodes[i].Count));
+            }
+
+            while(node != 0)
+            {
+                for (int i = 0; i < NewNodes.Length; i++)
+                    if (NewNodes[i].Contains(node))
+                    {
+                        NewNodes[i].Remove(node);
+                        NewNodes[node].Add(i);
+                        node = i;
+                        break;
+                    }
+
+            }
+            
         }
 
         public int TreeDiameterN2()
         {
-            return 0;
+            List<int> result = new List<int>();
+            for(int i = 0; i < Nodes.Length; i++)
+            {
+                result.Add(TreeHeightFromNode(i));
+            }
+
+            return result.Max();
         }
 
         public int TreeDiameterN()
