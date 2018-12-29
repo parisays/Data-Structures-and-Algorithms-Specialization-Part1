@@ -11,6 +11,7 @@ namespace A11
         public class Node
         {
             public long Key { get; set; }
+            public long Sum { get; set; }
             protected Node _LeftChild;
 
             public Node Left
@@ -59,12 +60,21 @@ namespace A11
             public Node(long key,
                 Node leftChild = null,
                 Node rightChild = null,
-                Node parent = null)
+                Node parent = null,
+                long sum = 0)
             {
                 Key = key;
                 Left = leftChild;
                 Right = rightChild;
                 Parent = parent;
+                Sum = sum;
+            }
+
+            public void UpdateSum()
+            {
+                long ls = (Left == null) ? 0 : Left.Sum;
+                long rs = (Right == null) ? 0 : Right.Sum;
+                Sum = Key + ls + rs;
             }
         }
 
@@ -83,23 +93,6 @@ namespace A11
 
         public virtual Node Find(long key)
         {
-            //if (node.Key == key)
-            //    return node;
-
-            //else if(node.Key > key)
-            //{
-            //    if (node.Left != null)
-            //        Find(key, node.Left);
-            //    return node;
-            //}
-
-            //else
-            //{
-            //    if (node.Right != null)
-            //        Find(key, node.Right);
-            //    return node.;
-            //}
-
             Node root = Root;
 
             if (root == null)
@@ -145,10 +138,11 @@ namespace A11
             if (nextNode == -1)
                 return null;
 
-            Node n = new Node(nextNode);
-
-            n.Left = ParseBST(ref preOrderList);
-            n.Right = ParseBST(ref preOrderList);
+            Node n = new Node(nextNode)
+            {
+                Left = ParseBST(ref preOrderList),
+                Right = ParseBST(ref preOrderList)
+            };
 
             return n;
         }
@@ -157,7 +151,6 @@ namespace A11
         {
             this.Root = root;
         }
-
         public override string ToString()
             => Root?.ToString();
 
@@ -180,9 +173,85 @@ namespace A11
                 n.Right = new Node(key, parent: n);
         }
 
-        public virtual void Delete(Node n) { }
-        public virtual void Delete(long key) { }
+        public virtual void Delete(Node n)
+        {
+                if (n.Right == null)
+                {
+                    if(n.Left == null)
+                    {
+                        if (n.Key == Root.Key)
+                        {
+                            Clear();
+                            return;
+                        }
+                    }
+                    
+                    else
+                        n.Left.Parent = n.Parent;
 
+
+                    if (n.Key != Root.Key)
+                    {
+                        if (n.IsLeftChild)
+                            n.Parent.Left = n.Left;
+
+                        else
+                            n.Parent.Right = n.Left;
+                    }
+                    else
+                        Root = n.Left;
+                }
+                else
+                {
+                    Node x = Next(n);
+                    if(n.Right == x)
+                    {
+                        x.Parent = n.Parent;
+                        x.Left = n.Left;
+                        x.Right = null;
+                        
+                    }
+                    else
+                    {
+                        x.Parent.Left = null;
+                        x.Left = n.Left;
+                        //n.Left.Parent = x;
+                        x.Right = n.Right;
+                        //n.Right.Parent = x;
+                        x.Parent = n.Parent;
+                        
+                    }
+
+                    if (n.Key != Root.Key)
+                    {
+                        if (n.IsLeftChild)
+                            n.Parent.Left = x;
+                        else
+                            n.Parent.Right = x;
+                    }
+                    else
+                        Root = x;
+                }
+
+                n = null;
+        }
+
+
+        public virtual void Delete(long key)
+        {
+            if (Root == null)
+                return;
+
+            Node n = Find(key);
+            if (n.Key != key) //the requested node isn't in the tree
+                return;
+
+            else
+                Delete(n);
+            
+        }
+
+        
         public Node Next(Node n)
         {
             if (n.Right != null)
@@ -193,9 +262,13 @@ namespace A11
 
         private Node RightAncestor(Node n)
         {
-            while (n.Key > n.Parent.Key)
-                n = n.Parent;
-            return n;
+            if (n.Parent == null)
+                return null;
+
+            if (n.Key < n.Parent.Key)
+                return n.Parent;
+            else
+                return RightAncestor(n.Parent);
         }
 
         private Node LeftDescendant(Node n)
@@ -207,14 +280,14 @@ namespace A11
 
         public Node Next(long key)
         {
-            Node n = Find(key);
+            Node n = this.Find(key);
             return Next(n);
         }
 
         public IEnumerable<Node> RangeSearch(long x, long y)
         {
             Node n = Find(x);
-            while(n.Key<=y)
+            while(n!=null && n.Key <= y)
             {
                 if (n.Key >= x)
                     yield return n;
@@ -274,9 +347,58 @@ namespace A11
                 parent.Right = newNode;
         }
 
-        protected Node RotateRight(Node x) => null;
+        /// <summary>
+        /// node is a right child of its parent
+        /// (one left rotation)
+        /// Zag
+        /// </summary>
+        /// <param name="n"></param>
+        protected void RotateLeft(Node n)
+        {
+            var green = n.Left;
+            var blue = n.Right;
+            var p = n.Parent;
+            var red = p.Left;
+
+            var topParent = p.Parent;
+
+            UpdateParentWithNewNode(topParent, p, n);
+
+            n.Left = p;
+            p.Right = green;
+            //UpdateSums(topParent, n, p);
+        }
 
 
-        protected Node RotateLeft(Node y) => null;
+        /// <summary>
+        /// Node is a left child of root
+        /// (one right rotation) 
+        /// Zig
+        /// </summary>
+        /// <param name="n"></param>
+        protected void RotateRight(Node n)
+        {
+            var green = n.Left;
+            var blue = n.Right;
+            var p = n.Parent;
+            var red = p.Left;
+
+            var topParent = p.Parent;
+
+            UpdateParentWithNewNode(topParent, p, n);
+
+            n.Right = p;
+            p.Left = blue;
+
+            //UpdateSums(topParent, n, p);
+        }
+
+        private void UpdateSums(Node topParent, Node n, Node p)
+        {
+            p.UpdateSum();
+            n.UpdateSum();
+            if (topParent != null)
+                topParent.UpdateSum();
+        }
     }
 }

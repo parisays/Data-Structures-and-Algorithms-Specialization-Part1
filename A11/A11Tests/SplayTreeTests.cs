@@ -21,21 +21,21 @@ namespace A11.Tests
             Assert.AreEqual("1", st.ToString());
         }
 
-        [TestMethod()]
-        public void InsertDeepTest()
-        {
-            BST.DebugMode = false;
+        //[TestMethod()]
+        //public void InsertDeepTest()
+        //{
+        //    BST.DebugMode = false;
 
-            var st = new SplayTree();
-            for (int i = 1; i < 100000; i++)
-                st.Insert(i);
+        //    var st = new SplayTree();
+        //    for (int i = 1; i < 100000; i++)
+        //        st.Insert(i);
 
-            for (int i = 100001; i < 200000; i++)
-            {
-                st.Insert(i);
-                st.Find(0);
-            }
-        }
+        //    for (int i = 100001; i < 200000; i++)
+        //    {
+        //        st.Insert(i);
+        //        st.Find(0);
+        //    }
+        //}
 
         [TestMethod()]
         public void InsertTest()
@@ -168,5 +168,21 @@ namespace A11.Tests
             Assert.AreEqual("13(6(4(1,-),8(7,10)),15)", st.ToString());
 
         }
+        
+        //[TestMethod()]
+        //public void UpdateSumsTest()
+        //{
+        //    IEnumerable<long> preOrderList = new List<long>()
+        //        { 8, 7, 6, 1, -1, 4, -1, -1, -1, -1, 13, 10, -1, -1, 15, -1, -1 };
+
+        //    var root = BST.ParseBST(ref preOrderList);
+        //    var st = new SplayTree(root);
+            
+        //    Assert.AreEqual(64, root.Sum);
+
+        //    st.Splay(4);
+        //    var n = st.Find(8);
+        //    Assert.AreEqual(46, n.Sum);
+        //}
     }
 }

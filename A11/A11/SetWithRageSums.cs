@@ -6,6 +6,7 @@ namespace A11
 {
     public class SetWithRageSums : Processor
     {
+        SplayTree splayTree;
         public SetWithRageSums(string testDataName) : base(testDataName)
         {
             CommandDict =
@@ -16,6 +17,7 @@ namespace A11
                             ['?'] = Find,
                             ['s'] = Sum
                         };
+            
         }
 
         public override string Process(string inStr) =>
@@ -27,12 +29,14 @@ namespace A11
 
         protected long X = 0;
 
-        protected List<long> Data;
+        //protected List<long> Data;
 
         public string[] Solve(string[] lines)
         {
             X = 0;
-            Data = new List<long>();
+            //Data = new List<long>();
+            splayTree = new SplayTree();
+            
             List<string> result = new List<string>();
             foreach(var line in lines)
             {
@@ -51,28 +55,25 @@ namespace A11
         private string Add(string arg)
         {
             long i = Convert(long.Parse(arg));
-            int idx = Data.BinarySearch(i);
-            if (idx < 0)
-                Data.Insert(~idx, i);
-
+            splayTree.Insert(i);
             return null;
         }
 
         private string Del(string arg)
         {
             long i = Convert(long.Parse(arg));
-            int idx = Data.BinarySearch(i);
-            if (idx >= 0)
-                Data.RemoveAt(idx);
-
+            splayTree.Delete(i);
             return null;
         }
 
         private string Find(string arg)
         {
             long i = Convert(int.Parse(arg));
-            int idx = Data.BinarySearch(i);
-            return idx < 0 ?
+            var n = splayTree.STFind(i);
+            if (n == null)
+                return "Not found";
+
+            return (n.Key != i) ?
                 "Not found" : "Found";
         }
 
@@ -82,21 +83,7 @@ namespace A11
             long l = Convert(long.Parse(toks[0]));
             long r = Convert(long.Parse(toks[1]));
 
-            l = Data.BinarySearch(l);
-            if (l < 0)
-                l = ~l;
-
-            r = Data.BinarySearch(r);
-            if (r < 0)
-                r = (~r -1); 
-            // If not ~r will point to a position with
-            // a larger number. So we should not include 
-            // that position in our search.
-
-            long sum = 0;
-            for (int i = (int)l; i <= r && i < Data.Count; i++)
-                sum += Data[i];
-
+            long sum = splayTree.RangeSearch(l, r);
             X = sum;
 
             return sum.ToString();

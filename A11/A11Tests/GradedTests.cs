@@ -21,7 +21,7 @@ namespace A11.Tests
                 new IsItBST("TD2"),
                 new BinaryTreeTraversals("TD1"),
                 new IsItBSTHard("TD3"),
-                //new SetWithRageSums("TD4"),
+                new SetWithRageSums("TD4"),
                 //new Rope("TD5")
             };
 

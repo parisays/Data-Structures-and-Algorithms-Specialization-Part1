@@ -21,7 +21,8 @@ namespace A11
 
             expectd.Sort();
 
-            bool answer = expectd.SequenceEqual(result);
+            bool answer = (expectd.SequenceEqual(result)
+                        && expectd.SequenceEqual(expectd.Distinct()));
             return answer;
         }
 
@@ -49,7 +50,7 @@ namespace A11
         }
     }
 
-    
+
     public class Tree
     {
         public Node Root;
@@ -66,12 +67,14 @@ namespace A11
 
                 for (int i = 0; i < nodes.Length; i++)
                 {
+
                     AllNodes[i].Key = nodes[i][0];
                     if (nodes[i][1] != -1)
                         AllNodes[i].Left = AllNodes[(int)nodes[i][1]];
 
                     if (nodes[i][2] != -1)
                         AllNodes[i].Right = AllNodes[(int)nodes[i][2]];
+
 
                 }
             }

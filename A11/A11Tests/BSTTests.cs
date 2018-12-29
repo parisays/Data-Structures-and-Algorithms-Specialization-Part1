@@ -65,6 +65,23 @@ namespace A11.Tests
             Assert.AreEqual("5(4(2(-,3),-),8)", bst.ToString());
         }
 
+        [TestMethod()]
+        public void Add2Test()
+        {
+            IEnumerable<long> preOrderList = new List<long>()
+                { 30, 20, 10, -1, -1, -1, -1 };
+
+            var bst = BST.ParseBST(preOrderList);
+
+            Assert.IsTrue(BST.EnsureBSTConsistency(bst.Root));
+            Assert.AreEqual("30(20(10,-),-)", bst.ToString());
+
+            bst.Insert(15);
+            Assert.IsTrue(BST.EnsureBSTConsistency(bst.Root));
+            Assert.AreEqual("30(20(10(-,15),-),-)", bst.ToString());
+
+        }
+
         [TestMethod]
         public void DeleteTest()
         {
@@ -74,19 +91,35 @@ namespace A11.Tests
             var bst = BST.ParseBST(preOrderList);
 
             var n = bst.Find(4);
-            bst.Delete(n);
+            bst.Delete(n.Key);
             Assert.IsTrue(BST.EnsureBSTConsistency(bst.Root));
             Assert.AreEqual("7(6(1,-),13(10,15))", bst.ToString());
 
             n = bst.Find(6);
-            bst.Delete(n);
+            bst.Delete(n.Key);
             Assert.IsTrue(BST.EnsureBSTConsistency(bst.Root));
             Assert.AreEqual("7(1,13(10,15))", bst.ToString());
 
             n = bst.Find(7);
-            bst.Delete(n);
+            bst.Delete(n.Key);
             Assert.IsTrue(BST.EnsureBSTConsistency(bst.Root));
             Assert.AreEqual("10(1,13(-,15))", bst.ToString());
+            
+            bst.Delete(13);
+            Assert.IsTrue(BST.EnsureBSTConsistency(bst.Root));
+            Assert.AreEqual("10(1,15)", bst.ToString());
+
+            bst.Delete(15);
+            Assert.IsTrue(BST.EnsureBSTConsistency(bst.Root));
+            Assert.AreEqual("10(1,-)", bst.ToString());
+
+            bst.Delete(10);
+            Assert.IsTrue(BST.EnsureBSTConsistency(bst.Root));
+            Assert.AreEqual("1", bst.ToString());
+
+            bst.Delete(1);
+            Assert.IsTrue(BST.EnsureBSTConsistency(bst.Root));
+            Assert.AreEqual(null, bst.ToString());
         }
     }
 }
