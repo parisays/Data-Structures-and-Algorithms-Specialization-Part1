@@ -9,7 +9,7 @@ using System.Diagnostics;
 
 namespace A3.Tests
 {
-    [TestClass()]
+    [TestClass()]//Grade:A3:100
     public class ProgramTests
     {
         [TestMethod(), Timeout(1000)]
