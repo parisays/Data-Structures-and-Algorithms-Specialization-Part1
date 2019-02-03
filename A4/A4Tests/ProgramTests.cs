@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace A4.Tests
 {
-    [TestClass()]
+    [TestClass()]//Grade:A4:100
     public class ProgramTests
     {
         [TestMethod(), Timeout(1000)]
